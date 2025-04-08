@@ -1,35 +1,54 @@
-name: Hello World # This is the name of the pipeline
+name: Hello World Python Pipeline  # Name of the pipeline
 
 # These are the events that trigger the pipeline
 on:
   push:
     branches:
-      - master  # Make sure this matches your branch name (e.g., 'main' or 'master')
-  workflow_dispatch:  # Allows manual trigger
-# This means the pipeline is triggered whenever we push code to the 'master' (or production) branch, 
-# or manually via the GitHub Actions UI.
+      - master  # Trigger pipeline on push to master branch (or change this to 'main' if necessary)
+  workflow_dispatch:  # Allows manual trigger via GitHub Actions UI
 
 jobs:
-  say-hello:  # This is the name of the job
-    runs-on: ubuntu-latest  # This defines the environment (Ubuntu) for the job
-    
+  say-hello:  # This is the job name
+    runs-on: ubuntu-latest  # This defines the environment (Ubuntu)
+
     steps:
-      # Step 1: Print "Hello, World!"
+      # Step 1: Checkout code (usually required for most workflows)
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Python (use the Python version you need)
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'  # Use the appropriate version of Python
+
+      # Step 3: Install required Python packages (if any)
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          # Add any other Python dependencies here if needed
+
+      # Step 4: Print Hello World using Python
       - name: Print Hello World
-        run: echo "Hello, World!"
+        run: |
+          python -c "print('Hello, World!')"
 
-      # Step 2: Print the current date
+      # Step 5: Print current date using Python
       - name: Print current date
-        run: date
+        run: |
+          python -c "import datetime; print('Current date:', datetime.datetime.now())"
 
-      # Step 3: List files in the current directory
+      # Step 6: List files in the current directory using Python
       - name: List of files
-        run: ls -l
+        run: |
+          python -c "import os; print('Files in current directory:', os.listdir())"
 
-      # Step 4: Check disk free space
-      - name: Check the disk free
-        run: df -m
+      # Step 7: Check the disk free space using Python
+      - name: Check disk free space
+        run: |
+          python -c "import shutil; total, used, free = shutil.disk_usage('/'); print('Disk free space in MB:', free // (2**20))"
 
-      # Step 5: Check disk usage
-      - name: Check the disk usage
-        run: du
+      # Step 8: Check disk usage using Python
+      - name: Check disk usage
+        run: |
+          python -c "import os; print('Disk usage (in bytes):', sum(os.path.getsize(f) for f in os.listdir('.') if os.path.isfile(f)))"
