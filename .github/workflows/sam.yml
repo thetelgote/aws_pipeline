@@ -1,20 +1,18 @@
-name: Python CI
+name: Simple Hello World Pipeline
 
-# This workflow will run on every push to the 'main' branch
 on:
   push:
     branches:
-      - main  # You can change this to your branch if needed
+      - main
 
 jobs:
-  run-hello-world:
-    runs-on: ubuntu-latest  # GitHub Actions will use an Ubuntu runner
+  hello_world:
+    runs-on: ubuntu-latest
 
     steps:
-    
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-        
-
-      # Step 3: Run the hello.py script
-      - name: Run Hello World script
-        run: echo "hello world"
+      - name: Print Hello World
+        run: |
+          echo "Hello, World!"
