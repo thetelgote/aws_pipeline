@@ -1,18 +1,35 @@
-name: Simple Hello World Pipeline
+name: Hello World # This is the name of the pipeline
 
+# These are the events that trigger the pipeline
 on:
   push:
     branches:
-      - main
+      - master  # Make sure this matches your branch name (e.g., 'main' or 'master')
+  workflow_dispatch:  # Allows manual trigger
+# This means the pipeline is triggered whenever we push code to the 'master' (or production) branch, 
+# or manually via the GitHub Actions UI.
 
 jobs:
-  hello_world:
-    runs-on: ubuntu-latest
-
+  say-hello:  # This is the name of the job
+    runs-on: ubuntu-latest  # This defines the environment (Ubuntu) for the job
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
+      # Step 1: Print "Hello, World!"
       - name: Print Hello World
-        run: |
-          echo "Hello, World!"
+        run: echo "Hello, World!"
+
+      # Step 2: Print the current date
+      - name: Print current date
+        run: date
+
+      # Step 3: List files in the current directory
+      - name: List of files
+        run: ls -l
+
+      # Step 4: Check disk free space
+      - name: Check the disk free
+        run: df -m
+
+      # Step 5: Check disk usage
+      - name: Check the disk usage
+        run: du
