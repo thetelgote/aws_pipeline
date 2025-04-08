@@ -44,4 +44,3 @@ urllib3==2.3.0
 validate==5.0.9
 virtualenv==20.28.0
 wheel==0.45.1
-Flask==2.0.1
