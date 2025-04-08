@@ -63,3 +63,6 @@ jobs:
           # Add your deployment logic here (e.g., to Heroku, AWS, etc.)
           # This is just a placeholder command
           # ./deploy.sh
+
+      - name : hello world 
+        run : echo "hello world .."    
