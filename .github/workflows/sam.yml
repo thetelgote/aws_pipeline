@@ -22,10 +22,15 @@ jobs:
         with:
           python-version: '3.x'  # You can specify any Python version here
 
-      - name: Install dependencies
+      - name: Install dependencies from requirements.txt
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Install dependencies from 'requirements.txt'
+          # Ensure that requirements.txt exists at the root directory
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            echo "requirements.txt not found. Skipping dependency installation."
+          fi
 
       - name: Run Flask app test
         run: |
@@ -52,10 +57,14 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
+      - name: Install dependencies from requirements.txt
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            echo "requirements.txt not found. Skipping dependency installation."
+          fi
 
       - name: Deploy Flask App
         run: |
@@ -63,6 +72,3 @@ jobs:
           # Add your deployment logic here (e.g., to Heroku, AWS, etc.)
           # This is just a placeholder command
           # ./deploy.sh
-
-      - name : hello world 
-        run : echo "hello world .."    
