@@ -1,0 +1,20 @@
+name: Python CI
+
+# This workflow will run on every push to the 'main' branch
+on:
+  push:
+    branches:
+      - main  # You can change this to your branch if needed
+
+jobs:
+  run-hello-world:
+    runs-on: ubuntu-latest  # GitHub Actions will use an Ubuntu runner
+
+    steps:
+    
+
+        
+
+      # Step 3: Run the hello.py script
+      - name: Run Hello World script
+        run: echo "hello world"
