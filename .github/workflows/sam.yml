@@ -1,54 +1,65 @@
-name: Hello World Python Pipeline  # Name of the pipeline
+name: Flask Chatbot CI/CD Pipeline
 
-# These are the events that trigger the pipeline
 on:
   push:
     branches:
-      - master  # Trigger pipeline on push to master branch (or change this to 'main' if necessary)
-  workflow_dispatch:  # Allows manual trigger via GitHub Actions UI
+      - main  # Change this to 'master' if you're using 'master' as the default branch
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:  # Allows manual trigger
 
 jobs:
-  say-hello:  # This is the job name
+  setup:
     runs-on: ubuntu-latest  # This defines the environment (Ubuntu)
 
     steps:
-      # Step 1: Checkout code (usually required for most workflows)
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2  # Checkout the repository code
 
-      # Step 2: Set up Python (use the Python version you need)
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'  # Use the appropriate version of Python
+          python-version: '3.x'  # You can specify any Python version here
 
-      # Step 3: Install required Python packages (if any)
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          # Add any other Python dependencies here if needed
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Install dependencies from 'requirements.txt'
 
-      # Step 4: Print Hello World using Python
-      - name: Print Hello World
+      - name: Run Flask app test
         run: |
-          python -c "print('Hello, World!')"
+          # Start Flask app and check if it's responding correctly (you may need to adjust this to fit your actual test)
+          nohup flask run &
+          sleep 5  # Wait for the server to start
+          curl --fail http://127.0.0.1:5000/  # Make sure the homepage is responding
 
-      # Step 5: Print current date using Python
-      - name: Print current date
+      - name: Run Flask app test for /get endpoint
         run: |
-          python -c "import datetime; print('Current date:', datetime.datetime.now())"
+          curl --fail "http://127.0.0.1:5000/get?msg=Hello"  # Check if /get endpoint responds
 
-      # Step 6: List files in the current directory using Python
-      - name: List of files
-        run: |
-          python -c "import os; print('Files in current directory:', os.listdir())"
+  deploy:
+    runs-on: ubuntu-latest
+    needs: setup
+    if: success()  # Only deploy if setup job was successful
 
-      # Step 7: Check the disk free space using Python
-      - name: Check disk free space
-        run: |
-          python -c "import shutil; total, used, free = shutil.disk_usage('/'); print('Disk free space in MB:', free // (2**20))"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      # Step 8: Check disk usage using Python
-      - name: Check disk usage
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
         run: |
-          python -c "import os; print('Disk usage (in bytes):', sum(os.path.getsize(f) for f in os.listdir('.') if os.path.isfile(f)))"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Deploy Flask App
+        run: |
+          echo "Deploying Flask app..."
+          # Add your deployment logic here (e.g., to Heroku, AWS, etc.)
+          # This is just a placeholder command
+          # ./deploy.sh
