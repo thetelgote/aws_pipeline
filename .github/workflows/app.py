@@ -1,8 +1,7 @@
 from flask import Flask, render_template_string, request, jsonify
 
-app = Flask(_name_)
+app = Flask(__name__)  # ✅ fixed typo
 
-# Define the HTML and CSS code directly in Python as a multi-line string.
 html_code = """
 <!DOCTYPE html>
 <html lang="en">
@@ -102,7 +101,7 @@ html_code = """
             userMessage.textContent = message;
             chatBox.appendChild(userMessage);
 
-            fetch(/get?msg=${encodeURIComponent(message)})
+            fetch(`/get?msg=${encodeURIComponent(message)}`)
                 .then(response => response.json())
                 .then(data => {
                     const botMessage = document.createElement("div");
@@ -130,5 +129,5 @@ def get_bot_response():
     bot_response = f"You said: {user_input}"
     return jsonify({"response": bot_response})
 
-if _name_ == "_main_":
+if __name__ == "__main__":  # ✅ fixed typo
     app.run(host="0.0.0.0", port=5000, debug=True)
