@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -21,11 +21,11 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run Flask app in background
+      - name: Start Flask app in background
         run: |
-          nohup python app.py &
-          sleep 5  # Let Flask boot
+          nohup python app.py > flask.log 2>&1 &
+          sleep 5  # give it time to start
 
-      - name: Test Flask endpoint with curl
+      - name: Test Flask root endpoint
         run: |
           curl -f http://127.0.0.1:5000/
