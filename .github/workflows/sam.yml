@@ -3,11 +3,11 @@ name: Deploy Flask App
 on:
   push:
     branches:
-      - main  # change if using a different branch
+      - main  # Change this if you use a different branch
 
 jobs:
-  deploy:
-    runs-on: [self-hosted, ec2]  # must match your runner tag
+  run-flask-app:
+    runs-on: [self-hosted, ec2]  # This should match your runner's tag
 
     steps:
       - name: Checkout code
@@ -16,23 +16,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-
-      - name: Kill previous Flask process (if any)
-        run: |
-          pkill -f "python3 app.py" || true
+          python3 -m pip install --upgrade pip
+          pip3 install -r requirements.txt
 
       - name: Start Flask app
         run: |
-          nohup python3 app.py > flask.log 2>&1 &
+          nohup python3 app.py > output.log 2>&1 &
+          sleep 5  # Wait for Flask to start
 
-      - name: Wait for server to start
-        run: sleep 5
-
-      - name: Test Flask app is running
+      - name: Test root endpoint
         run: |
-          curl http://127.0.0.1:5000
+          curl --fail http://127.0.0.1:5000
+
+      - name: Test /get endpoint
+        run: |
+          curl --fail "http://127.0.0.1:5000/get?msg=hello"
